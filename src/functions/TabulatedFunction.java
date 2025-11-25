@@ -1,9 +1,7 @@
 package functions;
 
-public interface TabulatedFunction extends Function {
-    double getLeftDomainBorder();
-    double getRightDomainBorder();
-    double getFunctionValue(double x);
+public interface TabulatedFunction extends Function, Cloneable {
+
     int getPointCount();
     FunctionPoint getPoint(int index) throws FunctionPointIndexOutOfBoundsException;
     void setPoint(int index, FunctionPoint point) throws InappropriateFunctionPointException;
@@ -14,5 +12,5 @@ public interface TabulatedFunction extends Function {
     void deletePoint(int index) throws FunctionPointIndexOutOfBoundsException;
     void addPoint(FunctionPoint point) throws InappropriateFunctionPointException;
 
-    Object clone();
+    Object clone(); // ← Оставляю, как требует задание 4
 }

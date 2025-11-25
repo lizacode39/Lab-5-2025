@@ -235,7 +235,8 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Externali
     public void addPoint(FunctionPoint point) throws InappropriateFunctionPointException {
         int index;
         for (index = 0; index < sizeValue && getPointX(index) < point.getX(); index++) ;
-        if (index != sizeValue && getNodeByIndex(index).point.getX() == point.getX()) {
+
+        if (index != sizeValue && Math.abs(getNodeByIndex(index).point.getX() - point.getX()) < EPS) {
             throw new InappropriateFunctionPointException("есть точка, абсцисса которой совпадает с абсциссой добавляемой точки");
         } else {
             addNodeByIndex(index).point = new FunctionPoint(point);
@@ -302,6 +303,22 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Externali
         TabulatedFunction other = (TabulatedFunction) o;
         if (sizeValue != other.getPointCount()) return false;
 
+        // Оптимизация: если оба объекта — LinkedListTabulatedFunction
+        if (o instanceof LinkedListTabulatedFunction) {
+            LinkedListTabulatedFunction listOther = (LinkedListTabulatedFunction) o;
+            FunctionNode current1 = head.next;
+            FunctionNode current2 = listOther.head.next;
+            for (int i = 0; i < sizeValue; i++) {
+                if (!current1.point.equals(current2.point)) { // Использую equals из FunctionPoint!
+                    return false;
+                }
+                current1 = current1.next;
+                current2 = current2.next;
+            }
+            return true;
+        }
+
+        // Общий случай: через интерфейс
         FunctionNode current = head.next;
         for (int i = 0; i < sizeValue; i++) {
             if (!current.point.equals(other.getPoint(i))) {

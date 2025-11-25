@@ -145,7 +145,8 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         }
         int index;
         for (index = 0; index < sizeValue && pointValue[index].getX() < point.getX(); index++) ;
-        if (index != sizeValue && pointValue[index].getX() == point.getX()) {
+
+        if (index != sizeValue && Math.abs(pointValue[index].getX() - point.getX()) < EPS) {
             throw new InappropriateFunctionPointException("есть точка, абсцисса которой совпадает с абсциссой добавляемой точки");
         } else {
             System.arraycopy(pointValue, index, pointValue, index + 1, sizeValue - index);
@@ -177,6 +178,18 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         TabulatedFunction other = (TabulatedFunction) o;
         if (sizeValue != other.getPointCount()) return false;
 
+        // Оптимизация: если оба объекта — ArrayTabulatedFunction
+        if (o instanceof ArrayTabulatedFunction) {
+            ArrayTabulatedFunction arrOther = (ArrayTabulatedFunction) o;
+            for (int i = 0; i < sizeValue; i++) {
+                if (!pointValue[i].equals(arrOther.pointValue[i])) { // Использую equals из FunctionPoint!
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Общий случай: через интерфейс
         for (int i = 0; i < sizeValue; i++) {
             if (!getPoint(i).equals(other.getPoint(i))) {
                 return false;
