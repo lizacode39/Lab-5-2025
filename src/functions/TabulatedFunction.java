@@ -1,6 +1,6 @@
 package functions;
 
-public interface TabulatedFunction extends Cloneable {
+public interface TabulatedFunction extends Function {
     double getLeftDomainBorder();
     double getRightDomainBorder();
     double getFunctionValue(double x);

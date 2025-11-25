@@ -172,18 +172,17 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o instanceof TabulatedFunction) {
-            TabulatedFunction other = (TabulatedFunction) o;
-            if (sizeValue != other.getPointCount()) return false;
-            for (int i = 0; i < sizeValue; i++) {
-                if (Math.abs(getPointX(i) - other.getPointX(i)) >= EPS ||
-                        Math.abs(getPointY(i) - other.getPointY(i)) >= EPS) {
-                    return false;
-                }
+        if (o == null || !(o instanceof TabulatedFunction)) return false;
+
+        TabulatedFunction other = (TabulatedFunction) o;
+        if (sizeValue != other.getPointCount()) return false;
+
+        for (int i = 0; i < sizeValue; i++) {
+            if (!getPoint(i).equals(other.getPoint(i))) {
+                return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     public int hashCode() {

@@ -167,7 +167,7 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Externali
 
     public FunctionPoint getPoint(int index) {
         isFunctionPointIndexOutOfBoundsException(index);
-        return new FunctionPoint(getNodeByIndex(index).point);
+        return new FunctionPoint(getNodeByIndex(index).point); // Возвращаем КОПИЮ!
     }
 
     public void setPoint(int index, FunctionPoint point) throws InappropriateFunctionPointException {
@@ -297,20 +297,19 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Externali
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o instanceof TabulatedFunction) {
-            TabulatedFunction other = (TabulatedFunction) o;
-            if (sizeValue != other.getPointCount()) return false;
-            FunctionNode current = head.next;
-            for (int i = 0; i < sizeValue; i++) {
-                if (Math.abs(current.point.getX() - other.getPointX(i)) >= EPS ||
-                        Math.abs(current.point.getY() - other.getPointY(i)) >= EPS) {
-                    return false;
-                }
-                current = current.next;
+        if (o == null || !(o instanceof TabulatedFunction)) return false;
+
+        TabulatedFunction other = (TabulatedFunction) o;
+        if (sizeValue != other.getPointCount()) return false;
+
+        FunctionNode current = head.next;
+        for (int i = 0; i < sizeValue; i++) {
+            if (!current.point.equals(other.getPoint(i))) {
+                return false;
             }
-            return true;
+            current = current.next;
         }
-        return false;
+        return true;
     }
 
     public int hashCode() {
